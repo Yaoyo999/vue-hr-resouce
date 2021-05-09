@@ -27,9 +27,10 @@ router.beforeEach((to, from, next) => {
       next('/login')
     }
   }
-  // 关闭进度条
-  NProgress.done() 
+  NProgress.done() // 手动强制关闭一次  为了解决 手动切换地址时  进度条的不关闭的问题
 })
 // 全局后置守卫
-router.afterEach((to, from) => {
+router.afterEach(() => {
+  // 关闭进度条
+  NProgress.done() 
 })
