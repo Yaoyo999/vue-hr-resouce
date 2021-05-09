@@ -1,5 +1,6 @@
 import { login, getUserInfo, getBaseUserInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import router from '@/router/index'
 export default {
   namespaced: true,
   state: {
@@ -44,11 +45,18 @@ export default {
   const userInfo = await getUserInfo() // 获取数据
   // 同步代码上面的代码执行完后才会执行下面的代码 到下面执行时有userId了 userInfo里面有 
   const baseUserInfo = await getBaseUserInfo(userInfo.userId) // 获取数据
-  console.log(userInfo)
-  console.log(baseUserInfo)
+  // console.log(userInfo)
+  // console.log(baseUserInfo)
  // 调用mutation
  context.commit('updateUserInfo', { ...userInfo, ...baseUserInfo })  // 将数据存储到vuex中 将数据userInfo和baseUserInfo合并
  return userInfo // 这里为什么要返回 为后面埋下伏笔
+ },
+ // 退出登录的action
+ logOut (context) {
+  // 删除用户token(vuex和本地)
+  context.commit('removeUserToken')
+  // 删除用户信息
+  context.commit('removeUserInfo')
  }
 }
 }

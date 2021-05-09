@@ -18,7 +18,7 @@ import '@/permission' // permission control
 // 考虑到我们的自定义组件并不是单独的一个，我们就一次性的遍历注册而不是单独的引入注册
 //针对下面的引入语法  **`import *  as  变量`**  得到的是一个对象**`{ 变量1：对象1，变量2： 对象2 ...   }`**, 所以可以采用对象遍历的方法进行处理
 import * as directives from '@/directives/index'
-console.log(directives)
+// console.log(directives)
 Object.keys(directives).forEach(directive => {
   Vue.directive(directive, directives[directive])
 })
