@@ -10,7 +10,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
-            <img :src="staffPhoto" class="user-avatar">
+            <img :src="staffPhoto" class="user-avatar" v-imgerror="replacePhoto">
           <span class="names">{{name}}</span>
           <i class="el-icon-caret-bottom" />
         </div>
@@ -36,7 +36,12 @@
 import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 
-export default {
+export default {  
+  data () {
+    return {
+      replacePhoto: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3228549874,2173006364&fm=26&gp=0.jpg'
+    }
+  },
   components: {
     Hamburger
   },
