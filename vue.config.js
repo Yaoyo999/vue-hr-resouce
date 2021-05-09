@@ -36,6 +36,12 @@ module.exports = {
       warnings: false,
       errors: true
     },
+    proxy: {
+      'api': {
+        target: 'http://ihrm-java.itheima.net/api', // 跨域请求的地址
+        changeOrigin: true // 只有这个值为true的情况下 才表示开启跨域
+      }//我们并没有进行**`pathRewrite`**,因为后端接口就是**`ihrm-java.itheima.net/api`**这种格式,所以不需要重写
+    }
 },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
