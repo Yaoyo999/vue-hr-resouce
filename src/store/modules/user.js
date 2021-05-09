@@ -1,4 +1,4 @@
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, getBaseUserInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 export default {
   namespaced: true,
@@ -36,16 +36,19 @@ export default {
    async login (context, data) {
     //  应为响应拦截器做了处理我们直接就可以获取到数据值而不需要再去result.data.data
     const result = await login (data) // 获取数据
-    // console.log(result)
+    console.log(result)
     context.commit('getUserToken', result)  // 将数据存储到vuex中
-    }
-  },
+    },
   // 封装获取用户信息的action
  async getUserInfo (context) {
-   const userInfo = await getUserInfo() // 获取数据
-   console.log(userInfo)
-  // 调用mutation
-  context.commit('updateUserInfo', userInfo)  // 将数据存储到vuex中
-  return userInfo // 这里为什么要返回 为后面埋下伏笔
-  }
+  const userInfo = await getUserInfo() // 获取数据
+  // 同步代码上面的代码执行完后才会执行下面的代码 到下面执行时有userId了 userInfo里面有 
+  const baseUserInfo = await getBaseUserInfo(userInfo.userId) // 获取数据
+  console.log(userInfo)
+  console.log(baseUserInfo)
+ // 调用mutation
+ context.commit('updateUserInfo', { ...userInfo, ...baseUserInfo })  // 将数据存储到vuex中 将数据userInfo和baseUserInfo合并
+ return userInfo // 这里为什么要返回 为后面埋下伏笔
+ }
+}
 }

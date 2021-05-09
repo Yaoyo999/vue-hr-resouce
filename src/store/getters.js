@@ -3,6 +3,8 @@ const getters = {
   device: state => state.app.device,
   token: state => state.user.token, // 建立全局的快捷访问
   avatar: state => state.user.avatar,
-  name: state => state.user.userInfo.name // 建立name的快捷访问
+  name: state => state.user.userInfo.username, // 建立name的快捷访问
+  userId: state => state.user.userInfo.userId, // 建立userId的快捷访问
+  staffPhoto: state => state.user.userInfo.staffPhoto // 建立staffPhoto的快捷访问
 }
 export default getters

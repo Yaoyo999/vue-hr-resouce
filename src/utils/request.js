@@ -31,8 +31,8 @@ request.interceptors.response.use(response => {
   } else {
     // 当success为false的时候，我们需要让它进入到catch中
     // 提示消息
-    Message.error('登录错误，请重试')
-    return Promise.reject(new Error(message))
+    // Message.error('登录错误，请重试')
+    // return Promise.reject(new Error(message))
   }
 },error => {
   return Promise.reject(error) // 返回执行错误 让当前的执行链进入 catch

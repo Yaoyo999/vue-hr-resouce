@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+//登录接口
 export function login(data) {
   return request({
     url: '/sys/login',
@@ -7,12 +7,17 @@ export function login(data) {
     data
   })
 }
-
+// 获取用户信息
 export function getUserInfo() {
   return request({
+    url: '/sys/profile',
     method: 'POST',
-    url: '/sys/profile'
   })
 }
-
-export function logout() {}
+// 获取员工基本信息（头像）
+export function getBaseUserInfo(userId) {
+  return request({
+    method: 'GET',
+    url: `/sys/user/${userId}`
+  })
+}

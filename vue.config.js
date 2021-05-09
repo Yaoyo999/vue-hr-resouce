@@ -36,11 +36,15 @@ module.exports = {
       warnings: false,
       errors: true
     },
+    // 配置反向代理
     proxy: {
-      'api': {
-        target: 'http://ihrm-java.itheima.net/api', // 跨域请求的地址
-        changeOrigin: true // 只有这个值为true的情况下 才表示开启跨域
-      }//我们并没有进行**`pathRewrite`**,因为后端接口就是**`ihrm-java.itheima.net/api`**这种格式,所以不需要重写
+      // 当地址中有/api的时候会触发代理机制
+      '/api': {
+        target: 'http://ihrm-java.itheima.net/', // 要代理的服务器地址  这里不用写 api
+        changeOrigin: true // 是否跨域
+        // 重写路径
+        // pathRewrite: {}
+      }
     }
 },
   configureWebpack: {

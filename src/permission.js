@@ -6,7 +6,7 @@ import 'nprogress/nprogress.css' // 引入进度条样式
 // 相当于在组件中调用this.$router
 const writeList = ['/login', '/404']
 // 全局前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     // 开启滚动条
     NProgress.start()
   if (store.getters.token) {
@@ -14,6 +14,10 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next('/')
     } else {
+      // 有token并且还没有userId说明还没获取用户信息
+      if(!store.state.user.userInfo.userId) {
+        await store.dispatch('user/getUserInfo')
+  }
       // 跳转的是其他页面放行
       next()
     }
@@ -32,5 +36,5 @@ router.beforeEach((to, from, next) => {
 // 全局后置守卫
 router.afterEach(() => {
   // 关闭进度条
-  NProgress.done() 
+  NProgress.done()
 })
