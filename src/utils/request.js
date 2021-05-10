@@ -3,6 +3,9 @@ import axiso from 'axios'
 import { Message } from 'element-ui'
 // 这里的store相当于组件中的this.$store
 import store from '@/store/index'
+import router from '@/router/index'
+import { getTokenTime } from '@/utils/auth'
+const OutTime = 4 // 前端自己设置token的过期时间为一个小时
 const request = axiso.create({
   baseURL: process.env.VUE_APP_BASE_API, // 执行npm run dev 走的是.env.development 配置的地址(http://ihrm-java.itheima.net/api)
   // 执行npm run bulid走的是 .env.production文件中配置的地址，开发环境和生产环境使用的不是同一套接口 process.env代表当前的环境变量
@@ -13,6 +16,14 @@ request.interceptors.request.use(config => {
   // config是当前请求的配置对象
   // 如果store里面有token说明用户已经登录，后续的请求都需要携带token
   if (store.getters.token) {
+    // 如果有token我们需要判断token是否已经过期
+    if ((Date.now() - getTokenTime()) /1000 > OutTime) {
+      // 说明超时了，删除token和用户信息
+      store.dispatch('user/logOut')
+      // 跳转到登录页
+      router.replace('/login')
+      return Promise.reject(new Error('token超时了'))
+    }
     // 配置token
     config.headers.Authorization = `Bearer ${store.getters.token}`
   }

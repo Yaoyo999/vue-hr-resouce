@@ -1,5 +1,5 @@
 import { login, getUserInfo, getBaseUserInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, setTokenTime } from '@/utils/auth'
 import router from '@/router/index'
 export default {
   namespaced: true,
@@ -38,6 +38,8 @@ export default {
     //  应为响应拦截器做了处理我们直接就可以获取到数据值而不需要再去result.data.data
     const result = await login (data) // 获取数据
     console.log(result)
+    // 这里已经获取到了token(我们将获取到的token的时间戳存到Cookie中)
+    setTokenTime()
     context.commit('getUserToken', result)  // 将数据存储到vuex中
     },
   // 封装获取用户信息的action
