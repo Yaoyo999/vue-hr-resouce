@@ -5,7 +5,7 @@ import { Message } from 'element-ui'
 import store from '@/store/index'
 import router from '@/router/index'
 import { getTokenTime } from '@/utils/auth'
-const OutTime = 4 // 前端自己设置token的过期时间为一个小时
+const OutTime = 3600 // 前端自己设置token的过期时间为一个小时
 const request = axiso.create({
   baseURL: process.env.VUE_APP_BASE_API, // 执行npm run dev 走的是.env.development 配置的地址(http://ihrm-java.itheima.net/api)
   // 执行npm run bulid走的是 .env.production文件中配置的地址，开发环境和生产环境使用的不是同一套接口 process.env代表当前的环境变量
