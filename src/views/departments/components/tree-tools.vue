@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { delDepartment, getDepartments } from '@/api/departments'
+import { delDepartment } from '@/api/departments'
 export default {
   name: 'treeTools',
   components: {},
@@ -67,12 +67,11 @@ export default {
           this.$emit('updateDept') // 触发自定义事件
           this.$message.success('删除部门成功') // 删除成功提示
          })
-          
-
         })
       } else {
         // 执行添加操作
-        alert('添加')
+        // 自定义通知父组件改变弹出的状态(显示弹出) 将当前点击的节点数据传递给父组件存储
+        this.$emit('addDept',this.treeNode)
       }
     }
   }

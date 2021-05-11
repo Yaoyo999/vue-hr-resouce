@@ -16,3 +16,12 @@ export function delDepartment(id){
     method: 'DELETE'
   })
 }
+
+// 添加部门的接口函数
+export function addDepartment(data) {
+  return request({
+    url: '/company/department',
+    method: 'POST',
+    data
+  })
+}
