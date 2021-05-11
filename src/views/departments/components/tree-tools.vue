@@ -7,14 +7,14 @@
             <el-row justify="end" type="flex">
               <el-col>{{treeNode.manager}}</el-col>
               <el-col>
-                <el-dropdown>
+                <el-dropdown  @command="deptClick">
                   <span class="el-dropdown-link">
                     操作<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item>添加子部门</el-dropdown-item>
-                      <el-dropdown-item v-if="!isRoot">编辑部门</el-dropdown-item>
-                      <el-dropdown-item v-if="!isRoot">删除部门</el-dropdown-item>
+                      <el-dropdown-item command="addDept">添加子部门</el-dropdown-item>
+                      <el-dropdown-item command="editDept" v-if="!isRoot">编辑部门</el-dropdown-item>
+                      <el-dropdown-item command="delDept" v-if="!isRoot">删除部门</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </el-col>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { delDepartment, getDepartments } from '@/api/departments'
 export default {
   name: 'treeTools',
   components: {},
@@ -45,7 +46,36 @@ export default {
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    // 当点击添加，编辑，删除时所触发的函数(根据该回调函数判断时触发的哪种事件进行不同的逻辑)
+     deptClick (type) {
+      if (type === 'editDept') {
+        // 执行编辑操作
+        alert('编辑')
+      } else if (type === 'delDept') {
+        // 执行删除操作
+        // 提示用户删除
+        this.$confirm(`确定要删除${this.treeNode.name}这个部门吗?`,'删除提示',{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          // 调用接口(成功后)返回一个promise对象可以继续.then进行下一步操作
+         return delDepartment(this.treeNode.id).then(()=>{
+          // 刷新获取列表
+          // getDepartments() 这样调用是不会刷新的因为数据是父组件传递过来的我们应该通知父组件去更新数据
+          this.$emit('updateDept') // 触发自定义事件
+          this.$message.success('删除部门成功') // 删除成功提示
+         })
+          
+
+        })
+      } else {
+        // 执行添加操作
+        alert('添加')
+      }
+    }
+  }
 }
 </script>
 

@@ -6,7 +6,7 @@
         <tree-tools :treeNode="company" :isRoot="true"></tree-tools>
         <!-- 树形内容 -->
         <el-tree :data="departs" :props="defaultProps">
-         <tree-tools slot-scope="{ data }" :treeNode="data"></tree-tools>
+         <tree-tools slot-scope="{ data }" :treeNode="data" @updateDept="getDepartments"></tree-tools>
         </el-tree>
       </el-card> 
     </div>
@@ -29,6 +29,8 @@ export default {
         children: 'children',
         label: 'name'
       },
+      // 这里的name我们自己设的默认的是label,children默认是children有name就会生成节点有children就会生成对应的子节点其他数据可以自定义
+      // 一个name所在的对象就会生成一个tree-tools组件(自己封装的)显示类似table
       departs: [{ name: '总裁办', manager: '曹操', children: [{ name: '董事会', manager: '曹丕' }] },
         { name: '行政部', manager: '刘备' },
         { name: '人事部', manager: '孙权' }],
