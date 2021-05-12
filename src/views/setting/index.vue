@@ -66,16 +66,16 @@
             </el-alert>
             <el-form label-width="120px" style="margin-top:50px">
               <el-form-item label="公司名称">
-                <el-input  disabled style="width:400px"></el-input>
+                <el-input  disabled style="width:400px" v-model="companyForm.name"></el-input>
               </el-form-item>
               <el-form-item label="公司地址">
-                <el-input  disabled style="width:400px"></el-input>
+                <el-input  disabled style="width:400px"  v-model="companyForm.companyAddress"></el-input>
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input  disabled style="width:400px"></el-input>
+                <el-input  disabled style="width:400px" v-model="companyForm.mailbox"></el-input>
               </el-form-item>
               <el-form-item label="备注">
-                <el-input  disabled style="width:400px" type="textarea" :rows="3"></el-input>
+                <el-input  disabled style="width:400px"  v-model="companyForm.remarks" type="textarea" :rows="3"></el-input>
               </el-form-item>
             </el-form>
             </el-tab-pane>
@@ -104,7 +104,8 @@
 </template>
 
 <script>
-import { getRole, addRole, getDetialRole, updateRole, delteRole } from '@/api/setting'
+import { getRole, addRole, getDetialRole, updateRole, delteRole , getCompanyInfo} from '@/api/setting'
+import { mapGetters } from 'vuex'
 export default {
   name: 'settingIndex',
   components: {},
@@ -115,13 +116,19 @@ export default {
       total: 0, // 总条数
       list: [], // 角色列表
       page: {
-        pagesize: 2, // 每页条数
+        pagesize: 5, // 每页条数
         page: 1
       },
       dialogVisible: false, // 弹出层
       roleForm: { // 角色表单
         name: '',
         description: ''
+      },
+      companyForm: { // 公司信息表单（只读）
+        name: '',
+        mailbox: '',
+        companyAddress: '',
+        remarks: ''
       },
       roleRules: { // 表单校验规则
         name: [
@@ -133,10 +140,13 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters(['companyId'])
+  },
   watch: {},
   created () {
-    this.getRole()
+    this.getRole() // 初始化获取角色列表
+    this.getCompanyInfo() // 初始化获取公司信息
   },
   mounted () {},
   methods: {
@@ -145,6 +155,10 @@ export default {
    const { rows, total } =  await getRole(this.page)
    this.list = rows
    this.total = total
+  },
+  // 获取公司信息
+  async getCompanyInfo() {
+    this.companyForm = await getCompanyInfo(this.companyId)
   },
   changePage(page) {
     this.page.page = page

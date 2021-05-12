@@ -40,3 +40,11 @@ export function delteRole (id) {
     method: 'DELETE'
   })
 }
+
+// 获取公司信息(id在登录的接口中有)
+export function getCompanyInfo(id){
+  return request({
+    url: `/company/${id}`,
+    method: 'GET'
+  })
+}
