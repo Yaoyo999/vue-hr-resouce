@@ -53,7 +53,7 @@ export default {
     // 获取部门数据
    async getDepartments(){
     const result = await getDepartments()
-    console.log(result)
+    // console.log(result)
     // 获取到的公司信息更新到data中
     this.company = {name: result.companyName, manager: '负责人',id: ''} //在最根级的**`tree-tools`**组件中，由于treenode属性中没有id，id便是undefined，但是通过undefined进行等值判断是寻找不到对应的根节点的， 所以在传值时，我们将id属性设置为 **`''`**
     // 获取到的组织结构更新到data中 获取到的数据是一条一条的 我们观察发现pid没有值的是一级节点，pid和id相等的是它的子节点

@@ -51,7 +51,8 @@ export default {
      deptClick (type) {
       if (type === 'editDept') {
         // 执行编辑操作
-        alert('编辑')
+        // 自定义通知父组件改变弹出的状态(显示弹出) 将当前点击的节点数据传递给父组件存储
+        this.$emit('addDept',this.treeNode)
       } else if (type === 'delDept') {
         // 执行删除操作
         // 提示用户删除

@@ -3,7 +3,9 @@
   title="添加部门"
   width="30%"
   :visible="departDiag"
+  @close="isCancel" 
   >
+  <!-- 当diglog点击×和确定按钮时默认会触发diglog的close事件 -->
   <el-form label-width="120px" :model="deptData" :rules="deptRules" ref="deptForm">
     <el-form-item label="部门名称" prop="name">
     <el-input style="width:80%" placeholder="请输入部门名称,1-50个字符" v-model="deptData.name"></el-input>
@@ -22,7 +24,7 @@
   </el-form>
   <el-row type="flex" justify="center" slot="footer">
     <el-col :span="10">
-    <el-button>取消</el-button>
+    <el-button @click="isCancel">取消</el-button>
     <el-button type="primary" @click="isOk">确定</el-button>
     </el-col>
   </el-row>
@@ -110,19 +112,21 @@ export default {
         // 验证成功
         if (valid) {
           // 发送请求
-       await addDepartment({...this.deptData, pid: this.treeNode.id})  // 调用新增接口 添加父部门的id（这样才能添加到对应的部门下）
+     await addDepartment({...this.deptData, pid: this.treeNode.id})  // 调用新增接口 添加父部门的id（这样才能添加到对应的部门下）
       // 通知父组件更新视图刷新数据
       this.$emit('getDept')
+      this.$emit('update:departDiag', false) // 当dialog关闭时会触发close事件
       this.$message.success('添加部门成功')
         }
       })
      } catch (error) {
+       this.$emit('update:departDiag', false)
        return Promise.reject(error)
      } finally {
-      //  关闭弹窗
-      this.$emit('update:departDiag', false)
+      //  关闭弹窗（请求是异步的数据还没发送前就已经被this.$refs.deptForm.resetFields()清空了所以显示不出来数据）
+      // this.$emit('update:departDiag', false)
       // 清除输入的数据和验证不通过的提示信息 el组件自带的方法
-      this.$refs.deptForm.resetFields()
+      // this.$refs.deptForm.resetFields()
      }
     },
     // 获取简单的员工信息username,id
@@ -130,6 +134,11 @@ export default {
     //  获取到的数据存储到people中，遍历展示
       this.people = await getEasyEmployee()
   // console.log(result)
+    },
+    // 点击取消按钮，清空数据，关闭弹出层
+    isCancel () {
+      this.$emit('update:departDiag', false)
+      this.$refs.deptForm.resetFields()
     }
   }
 }
