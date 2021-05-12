@@ -25,3 +25,20 @@ export function addDepartment(data) {
     data
   })
 }
+
+//根据ID查询部门详情getDetialDept
+export function getDetialDept(id) {
+  return request({
+    url: `/company/department/${id}`,
+    method: 'GET'
+  })
+}
+
+// 根据id修改部门详情
+export function eidtDepartment(data) {
+  return request({
+    url: `/company/department/${data.id}`,
+    method: 'PUT',
+    data
+  })
+}

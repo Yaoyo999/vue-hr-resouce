@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { delDepartment } from '@/api/departments'
+import { delDepartment, getDetialDept} from '@/api/departments'
 export default {
   name: 'treeTools',
   components: {},
@@ -48,11 +48,11 @@ export default {
   mounted () {},
   methods: {
     // 当点击添加，编辑，删除时所触发的函数(根据该回调函数判断时触发的哪种事件进行不同的逻辑)
-     deptClick (type) {
+    async deptClick (type) {
       if (type === 'editDept') {
         // 执行编辑操作
         // 自定义通知父组件改变弹出的状态(显示弹出) 将当前点击的节点数据传递给父组件存储
-        this.$emit('addDept',this.treeNode)
+        this.$emit('editDept',this.treeNode)
       } else if (type === 'delDept') {
         // 执行删除操作
         // 提示用户删除

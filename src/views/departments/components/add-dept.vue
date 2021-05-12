@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-  title="添加部门"
+  :title="titleName"
   width="30%"
   :visible="departDiag"
   @close="isCancel" 
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getDepartments, addDepartment} from '@/api/departments'
+import { getDepartments, addDepartment, getDetialDept, eidtDepartment} from '@/api/departments'
 import { getEasyEmployee } from '@/api/employees'
 export default {
   name: 'AddDept',
@@ -55,18 +55,29 @@ export default {
     const { depts } = await getDepartments()
     // 这里我们需要当前操作部门的信息，只有tree-tools里面有我们需要在弹出显示的时候传递给父组件（父组件存到自己的data中）
     // ，然后传递给当前组件。
-   const isRepeat = depts.filter(item => {
+    let isRepeat = false
+    if (this.deptData.id) {
+      // id有值说明数据库中已经存在这一节点，由于我们是修改，所以我们应该排除掉自己 this.treeNode === this.deptData
+       isRepeat = depts.filter(item => item.pid === this.deptData.pid && item.id !== this.treeNode.id).some(item => item.name === value)
+    } else {
+    isRepeat = depts.filter(item => {
       // 查找当前部门的所有子部门
      return item.pid === this.treeNode.id
    }
     ).some(item => item.name === value)
+    }
     isRepeat ? callback(new Error(`该部门下已经有${value}部门了`)) : callback()
     }
 
     const checkCodeRepeat = async (rule, value, callback) => {
       const { depts } = await getDepartments()
+      let isRepeat = false
+      if (this.deptData.id) {
+        depts.filter(item => item.code !== this.treeNode.code).some(item => item.code === value)
+      } else {
       // 找所有的数据中查找code一样的
-      const isRepeat = depts.some(item => item.code === value && value)  // 这里加一个value因为我们的部门编码可以有为空的
+       isRepeat = depts.some(item => item.code === value && value)  // 这里加一个value因为我们的部门编码可以有为空的
+    }
       isRepeat ? callback(new Error('该部门编码已经存在')) : callback()
     }
     return {
@@ -100,7 +111,11 @@ export default {
       people: [] // 负责人列表
     }
   },
-  computed: {},
+  computed: {
+    titleName () {
+      return this.deptData.id ? '编辑部门' : '添加部门'
+    }
+  },
   watch: {},
   created () {},
   mounted () {},
@@ -111,12 +126,19 @@ export default {
        this.$refs.deptForm.validate(async valid => {
         // 验证成功
         if (valid) {
-          // 发送请求
-     await addDepartment({...this.deptData, pid: this.treeNode.id})  // 调用新增接口 添加父部门的id（这样才能添加到对应的部门下）
+          // 判断是添加操作还是编辑操作
+          if (this.deptData.id) {
+            // 修改操作
+            await eidtDepartment(this.deptData)
+            this.$message.success('修改成功')
+          } else {
+         // 发送请求
+       await addDepartment({...this.deptData, pid: this.treeNode.id}) // 调用新增接口 添加父部门的id（这样才能添加到对应的部门下）
+         this.$message.success('添加部门成功')
+          }
       // 通知父组件更新视图刷新数据
       this.$emit('getDept')
       this.$emit('update:departDiag', false) // 当dialog关闭时会触发close事件
-      this.$message.success('添加部门成功')
         }
       })
      } catch (error) {
@@ -138,7 +160,20 @@ export default {
     // 点击取消按钮，清空数据，关闭弹出层
     isCancel () {
       this.$emit('update:departDiag', false)
+      // 注意表单的resetFields方法只能清楚表单中绑定的数据像id是不能清楚的会导致误判断表单里面有id,所以我们需要手动重置表单
+      this.deptData = {
+        name: '',
+        introduce: '',
+        code: '',
+        manager: ''
+
+      }
       this.$refs.deptForm.resetFields()
+    },
+    // 获取部门详情
+    async getDetialDept (id) {
+      // 注意现在的deprData表单数据里面是有id的
+    this.deptData = await getDetialDept(id)
     }
   }
 }

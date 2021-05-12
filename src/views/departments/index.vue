@@ -6,12 +6,12 @@
         <tree-tools :treeNode="company" :isRoot="true" @addDept="addDept"></tree-tools>
         <!-- 树形内容 -->
         <el-tree :data="departs" :props="defaultProps">
-         <tree-tools slot-scope="{ data }" :treeNode="data" @updateDept="getDepartments" @addDept="addDept"></tree-tools>
+         <tree-tools slot-scope="{ data }" :treeNode="data" @updateDept="getDepartments" @addDept="addDept" @editDept="editDept"></tree-tools>
         </el-tree>
       </el-card>
     </div>
     <!-- 添加，编辑组件 -->
-    <AddDept :departDiag.sync="departDiag" :treeNode="node" @getDept="getDepartments"/>
+    <AddDept :departDiag.sync="departDiag" :treeNode="node" @getDept="getDepartments" ref="addEdit"/>
   </div>
 </template>
 
@@ -65,6 +65,14 @@ export default {
       this.departDiag = true
       // 存到暂node中给其他的组件
       this.node = node
+    },
+    // 父组件调用ref子组件的方法
+    editDept (node) {
+      // 存到暂node中给其他的组件
+      this.node = node
+      // 展示弹出层
+      this.departDiag = true
+      this.$refs.addEdit.getDetialDept(node.id)
     }
   }
 }
