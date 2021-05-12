@@ -40,7 +40,7 @@
                     <template slot-scope="{ row }"> 
                       <el-button size="small" type="success">分配权限</el-button>
                       <el-button size="small" type="primary" @click="editRole(row.id)">编辑</el-button>
-                      <el-button size="small" type="danger">删除</el-button>
+                      <el-button size="small" type="danger" @click="delteRole(row)">删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -86,6 +86,7 @@
     <el-dialog
       title="新增角色"
       :visible.sync="dialogVisible"
+      @close="isCancel"
     >
     <el-form label-width="120px" :model="roleForm" :rules="roleRules" ref="diagForm">
       <el-form-item label="角色名称" prop="name"><el-input v-model="roleForm.name"></el-input></el-form-item>
@@ -103,7 +104,7 @@
 </template>
 
 <script>
-import { getRole, addRole, getDetialRole, updateRole } from '@/api/setting'
+import { getRole, addRole, getDetialRole, updateRole, delteRole } from '@/api/setting'
 export default {
   name: 'settingIndex',
   components: {},
@@ -189,14 +190,14 @@ this.$message.success('操作成功')
   } catch (error) {
     // 不通过执行这里
     console.log('不通过')
-    // this.$message.error('添加失败')
+    this.$message.error('添加失败')
   }
   // 关闭弹窗
   this.dialogVisible = false
 },
 // 取消按钮
 isCancel () {
-  // 关闭弹层
+  // 关闭弹层(弹窗关闭会触发close事件)
   this.dialogVisible = false,
   // 清空表单
   this.roleForm = {
@@ -205,6 +206,22 @@ isCancel () {
   }
   // 清楚校验规则数据
   this.$refs.diagForm.resetFields()
+},
+// 删除角色
+ delteRole (row) {
+  this.$confirm(`确定要删除吗${row.name}吗?`,'删除提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async ()=>{
+    await delteRole(row.id)
+    // 刷新数据
+   await this.getRole()
+      // 执行成功
+  this.$message.success('删除成功')
+  }).catch(error => {
+    console.log(error)
+  })
 }
 }
 }
