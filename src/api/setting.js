@@ -16,3 +16,20 @@ export function addRole(data) {
     data
   })
 }
+
+// 获取角色信息
+export function getDetialRole (id) {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'GET'
+  })
+}
+
+// 更新角色信息
+export function updateRole (data) {
+  return request({
+    method: 'PUT',
+    url: `/sys/role/${data.id}`,
+    data
+  })
+}

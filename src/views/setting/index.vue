@@ -36,9 +36,10 @@
                       prop="address"
                       label="操作"
                     >
-                    <template>
+                    <!-- 结构出每个数据的rows对象 -->
+                    <template slot-scope="{ row }"> 
                       <el-button size="small" type="success">分配权限</el-button>
-                      <el-button size="small" type="primary">编辑</el-button>
+                      <el-button size="small" type="primary" @click="editRole(row.id)">编辑</el-button>
                       <el-button size="small" type="danger">删除</el-button>
                     </template>
                   </el-table-column>
@@ -93,7 +94,7 @@
     <!-- 底部 -->
     <el-row type="flex" justify="center">
       <el-col :span="6">
-        <el-button size="small">取消</el-button>
+        <el-button size="small" @click="isCancel">取消</el-button>
         <el-button size="small" type="primary" @click="isOK">确定</el-button>
       </el-col>
     </el-row>
@@ -102,7 +103,7 @@
 </template>
 
 <script>
-import { getRole, addRole } from '@/api/setting'
+import { getRole, addRole, getDetialRole, updateRole } from '@/api/setting'
 export default {
   name: 'settingIndex',
   components: {},
@@ -154,13 +155,26 @@ export default {
     // 展示弹层
     this.dialogVisible = true
   },
+  // 编辑角色
+  async editRole (id) {
+    // 获取数据，数据回写展示
+  this.roleForm= await getDetialRole(id)
+  // 展示弹层
+  this.dialogVisible = true
+  
+  },
   async isOK () {
     try {
     // 手动校验，通过发送请求，不通过阻止 (第二种方式，如果validator方法中不传回调函数则是一个promise对象)
   await this.$refs.diagForm.validate()
     // 校验通过执行这里
-  // 发请求添加数据
+    if (this.roleForm.id) {
+      // 有id值说明是编辑角色
+    await updateRole(this.roleForm)
+    } else {
+     // 发请求添加数据
   await addRole(this.roleForm)
+    }
   // 刷新数据
   this.getRole()
   // 清空表单
@@ -171,14 +185,26 @@ export default {
   this.$refs.diagForm.resetFields()
 // 关闭弹层
 this.dialogVisible = false
-this.$message.success('添加成功')
+this.$message.success('操作成功')
   } catch (error) {
     // 不通过执行这里
     console.log('不通过')
     // this.$message.error('添加失败')
   }
-  this.$refs.diagForm.resetFields()
+  // 关闭弹窗
   this.dialogVisible = false
+},
+// 取消按钮
+isCancel () {
+  // 关闭弹层
+  this.dialogVisible = false,
+  // 清空表单
+  this.roleForm = {
+    name: '',
+    description: '',
+  }
+  // 清楚校验规则数据
+  this.$refs.diagForm.resetFields()
 }
 }
 }
