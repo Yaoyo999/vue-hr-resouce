@@ -44,6 +44,7 @@
            <el-table-column
            align="center"
           prop="formOfEmployment"
+          :formatter="formatterForm"
           label="聘用形式"
           sortable=""
           >
@@ -57,17 +58,27 @@
         </el-table-column>
            <el-table-column
            align="center"
-          prop="timeOfEntry"
           label="入职时间"
           sortable=""
           >
-        </el-table-column>
+          <!-- 过滤器格式化时间 要格式化的数据 | 过滤器函数 -->
+          <template slot-scope="{ row }">
+            {{ row.timeOfEntry | formatDate }}
+          </template>
+          </el-table-column>
            <el-table-column
            align="center"
           prop="enableState"
           label="账户状态"
           sortable=""
           >
+          <template slot-scope="{ row }">
+            <!-- 这里的强制绑定value值和v-model是一个道理但v-model中不能进行js运算只能绑定数据 -->
+            <el-switch
+              :value="row.enableState === 1"
+              >
+            </el-switch>
+          </template>
         </el-table-column>
            <el-table-column
            align="center"
@@ -105,6 +116,8 @@
 
 <script>
 import { getEmployee } from '@/api/employees'
+// 导入枚举数据(注意这里是引入的数据不能直接使用，模板上能直接使用的数据有data,prop,computed里的数据)
+import EmployeeEnum from '@/api/constant/employees'
 export default {
   name: 'employeeIndex',
   components: {},
@@ -116,7 +129,8 @@ export default {
         page: 1, // 第一页
         size: 10 // 每页十条
       },
-      total: 0  // 总条数
+      total: 0,  // 总条数
+      EmployeeEnum // 枚举的数据es6写法
     }
   },
   computed: {},
@@ -144,6 +158,15 @@ export default {
       this.dataForm.page = page
       // 重新获取数据
       this.getEmployee()
+    },
+    // 处理聘用形式
+    formatterForm(row, column, cellValue, index) {
+      // console.log(arguments)
+      // return 1 return什么当前的数据列就显示什么 find方法返回的是满足条件的元素(对象)
+     const obj = this.EmployeeEnum.hireType.find(item => item.id === cellValue)
+      // return obj.id === 1 ? '正式' : '非正式' 如果没有找到obj那么obj.id 就相当于undefined.id 报错
+      return obj ? obj.value : '未知'
+
     }
   }
 }
