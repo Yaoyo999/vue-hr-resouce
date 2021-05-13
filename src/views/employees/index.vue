@@ -9,7 +9,7 @@
         <template v-slot:afterSlot>
           <el-button size="small" type="warning">导入</el-button>
           <el-button size="small" type="danger">导出</el-button>
-          <el-button size="small" type="primary">新增员工</el-button>
+          <el-button size="small" type="primary" @click="employeeDialog = true">新增员工</el-button>
         </template>
       </page-tools>
       <!-- 数据列表 -->
@@ -111,6 +111,8 @@
         </el-row>
       </el-card>
     </div>
+    <!-- 添加员工组件 -->
+  <add-employee :employeeDialog.sync="employeeDialog"/>
   </div>
 </template>
 
@@ -118,9 +120,12 @@
 import { getEmployee, deleteEmployee } from '@/api/employees'
 // 导入枚举数据(注意这里是引入的数据不能直接使用，模板上能直接使用的数据有data,prop,computed里的数据)
 import EmployeeEnum from '@/api/constant/employees'
+import AddEmployee from './components/add-employee'
 export default {
   name: 'employeeIndex',
-  components: {},
+  components: {
+    AddEmployee
+  },
   props: {},
   data () {
     return {
@@ -130,7 +135,8 @@ export default {
         size: 10 // 每页十条
       },
       total: 0,  // 总条数
-      EmployeeEnum // 枚举的数据es6写法
+      EmployeeEnum, // 枚举的数据es6写法
+      employeeDialog: false // 添加员工的弹层
     }
   },
   computed: {},
