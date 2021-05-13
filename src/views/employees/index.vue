@@ -87,13 +87,13 @@
           sortable=""
           fixed="right" width="280"
           >
-          <template>
+          <template slot-scope="{ row }">
             <el-button type="text" size="small">查看</el-button>
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
             <el-button type="text" size="small">角色</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="deleteEmployee(row)">删除</el-button>
           </template>
         </el-table-column>
         </el-table>
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { getEmployee } from '@/api/employees'
+import { getEmployee, deleteEmployee } from '@/api/employees'
 // 导入枚举数据(注意这里是引入的数据不能直接使用，模板上能直接使用的数据有data,prop,computed里的数据)
 import EmployeeEnum from '@/api/constant/employees'
 export default {
@@ -166,7 +166,20 @@ export default {
      const obj = this.EmployeeEnum.hireType.find(item => item.id === cellValue)
       // return obj.id === 1 ? '正式' : '非正式' 如果没有找到obj那么obj.id 就相当于undefined.id 报错
       return obj ? obj.value : '未知'
-
+    },
+    // 删除员工
+    deleteEmployee(row) {
+      this.$confirm(`确定删除${row.username}吗?`, '删除提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async()=>{
+          await deleteEmployee(row.id)
+          // 刷新获取新的列表
+          this.getEmployee()
+          // 提示
+          this.$message.success('删除成功')
+      })
     }
   }
 }
