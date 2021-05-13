@@ -8,3 +8,12 @@ export function getEasyEmployee () {
     method: 'GET'
   })
 }
+
+// 获取员工列表
+export function getEmployee (params) {
+  return request({
+    url: '/sys/user',
+    method: 'GET',
+    params
+  })
+}
