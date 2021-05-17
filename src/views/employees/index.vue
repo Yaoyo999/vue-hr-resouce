@@ -8,7 +8,7 @@
         <!-- 后面的内容 两种插槽的使用都可以-->
         <template v-slot:afterSlot>
           <el-button size="small" type="warning" @click="$router.push('/import?type=user')">导入</el-button>
-          <el-button size="small" type="danger">导出</el-button>
+          <el-button size="small" type="danger" @click="exportExcel">导出</el-button>
           <el-button size="small" type="primary" @click="employeeDialog = true">新增员工</el-button>
         </template>
       </page-tools>
@@ -121,6 +121,8 @@ import { getEmployee, deleteEmployee } from '@/api/employees'
 // 导入枚举数据(注意这里是引入的数据不能直接使用，模板上能直接使用的数据有data,prop,computed里的数据)
 import EmployeeEnum from '@/api/constant/employees'
 import AddEmployee from './components/add-employee'
+// 注意这里是引入文件中的函数formatDate组件模板中是使用的全局注册过滤器
+import { formatDate } from '@/filters/index'
 export default {
   name: 'employeeIndex',
   components: {
@@ -186,6 +188,53 @@ export default {
           // 提示
           this.$message.success('删除成功')
       })
+    },
+    // 导出excel数据
+    async exportExcel () {
+      const headers = {
+        '手机号': 'mobile',
+        '姓名': 'username',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      // 获取所有员工信息
+      // 由于`js-xlsx`体积还是很大的，导出功能也不是一个非常常用的功能，所以使用的时候建议使用懒加载
+      import('@/vendor/Export2Excel').then(async excel => {
+        const { rows } = await getEmployee({page:1,size: this.total})
+        // 目的获取获取 将[{},{}] => [[],[]]这种形式
+         const data =  this.formatData(headers, rows)
+        // 导入成功.then .返回一个excel对象
+        excel.export_json_to_excel({
+          header: Object.keys(headers),// 表头 接收一个数组 ['姓名','年龄'] 必传
+          data, // 具体的数据数组 格式为[['jack', 18],['Bob', 20]] 必传
+          bookType: 'xlsx', // 文件类型
+          autoWidth: true, // 单元格是否要自适应宽度
+          filename: '员工信息表'  // 导出文件名
+        })
+      })
+    },
+    formatData (headers, rows) {
+     return rows.map(item => {
+       // item是对象  => 转化成只有值的数组 => 数组值的顺序依赖headers  {username: '张三'  }
+      //   // Object.keys(headers)  => ["姓名", "手机号",...]
+       return Object.keys(headers).map(key => {
+        //  格式化日期
+         if (headers[key] === 'timeOfEntry' || headers[key] === 'correctionTime') {
+           return  formatDate(item[headers[key]])
+         } else if (headers[key] === 'formOfEmployment') {
+          //  注意这里不能在使用item了外层和里层都有且都有使用item数据不能找外层的会找近作用域的
+         const obj = EmployeeEnum.hireType.find(obj => item[headers[key]] === obj.id )
+        return obj ? obj.value : '未知'
+         }
+          // key为中文的键值
+         return item[headers[key]]
+        })
+      })
+       // return rows.map(item => Object.keys(headers).map(key => item[headers[key]]))
+      // 需要处理时间格式问题
     }
   }
 }

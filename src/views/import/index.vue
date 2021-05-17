@@ -19,6 +19,7 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    // 导入excel数据
     async success ({header, results}) {
       // 因为这里的导入的数据是中文的格式，所以我们需要把相应的字段变为英文，然后调用接口发送请求
        const userRelations = {
