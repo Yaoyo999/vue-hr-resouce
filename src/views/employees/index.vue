@@ -192,8 +192,8 @@ export default {
     // 导出excel数据
     async exportExcel () {
       const headers = {
-        '手机号': 'mobile',
         '姓名': 'username',
+        '手机号': 'mobile',
         '入职日期': 'timeOfEntry',
         '聘用形式': 'formOfEmployment',
         '转正日期': 'correctionTime',
@@ -204,6 +204,10 @@ export default {
       // 由于`js-xlsx`体积还是很大的，导出功能也不是一个非常常用的功能，所以使用的时候建议使用懒加载
       import('@/vendor/Export2Excel').then(async excel => {
         const { rows } = await getEmployee({page:1,size: this.total})
+        // multiHeader里面是一个二维数组，里面的一个元素是一行表头
+        // multiHeader中的一行表头中的字段的个数需要和真正的列数相等，假设想要跨列，多余的空间需要定义成空串与headers中的顺序一一对应
+        const multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']]
+        const merges = ['A1:A2', 'B1:F1', 'G1:G2'] // 我们要实现其合并的效果， 需要设定merges选项,merges的顺序无关
         // 目的获取获取 将[{},{}] => [[],[]]这种形式
          const data =  this.formatData(headers, rows)
         // 导入成功.then .返回一个excel对象
@@ -212,7 +216,9 @@ export default {
           data, // 具体的数据数组 格式为[['jack', 18],['Bob', 20]] 必传
           bookType: 'xlsx', // 文件类型
           autoWidth: true, // 单元格是否要自适应宽度
-          filename: '员工信息表'  // 导出文件名
+          filename: '员工信息表',  // 导出文件名
+          multiHeader, // 复杂表头的部分
+          merges // 合并选项
         })
       })
     },
