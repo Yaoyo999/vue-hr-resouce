@@ -63,7 +63,19 @@ export const constantRoutes = [
     }]
   },
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
+  // import excel导入组件，静态组件
+  {
+    path: '/import',
+    component: Layout,
+    children: [
+    {
+      path: '',
+      name: 'import',
+      component: () => import('@/views/import')
+    }
+    ]
+  }
 ]
 // 动态路由
 export const asyncRoutes = [

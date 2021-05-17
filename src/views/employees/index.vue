@@ -7,7 +7,7 @@
         <span slot="beforeSlot">共找到{{total}}条员工信息</span>
         <!-- 后面的内容 两种插槽的使用都可以-->
         <template v-slot:afterSlot>
-          <el-button size="small" type="warning">导入</el-button>
+          <el-button size="small" type="warning" @click="$router.push('/import?type=user')">导入</el-button>
           <el-button size="small" type="danger">导出</el-button>
           <el-button size="small" type="primary" @click="employeeDialog = true">新增员工</el-button>
         </template>

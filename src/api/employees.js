@@ -34,3 +34,12 @@ export function addEmployee(data){
     data
   })
 }
+
+// 封装导入员工的api接口
+export function importEmployee(data){
+  return request({
+    method: 'POST',
+    url: '/sys/user/batch',
+    data
+  })
+}

@@ -30,7 +30,7 @@
     <el-row type="flex" justify="center">
       <el-col :span="8">
         <el-button @click="isCancel">取 消</el-button>
-        <el-button type="primary" @click="isOK">确 定</el-button>
+        <el-button type="primary" @click="isOK" :loading="btnLoading">确 定</el-button>
     </el-col>
     </el-row>
    
@@ -87,7 +87,8 @@ export default {
       // 树形化后的部门数据
       treeDepts: [],
       isTreeData: false, // 是否有树形数据
-      loading: false // 数据加载状态
+      loading: false, // 数据加载状态
+      btnLoading: false // 确定按钮loading
     }
   },
     props: {
@@ -106,15 +107,20 @@ export default {
        await this.$refs.employeeForm.validate()
       //  通过校验执行这里
       // 发请求，添加员工
+      this.btnLoading = true
       await addEmployee(this.dataForm)
-      // 关闭弹出层
-      this.$emit('update:employeeDialog', false)  // 关闭弹层的时候默认会触发close事件所以我们只需要取消按钮处统一做首尾工作
+      this.btnLoading = false
       //调用父组件获取员工数据列表
       this.$parent.getEmployee()
       // 提示消息
       this.$message.success('添加员工成功')
       } catch (error) {
         console.log(error)
+      } finally {
+      // 关闭弹出层
+      this.$emit('update:employeeDialog', false)  // 关闭弹层的时候默认会触发close事件所以我们只需要取消按钮处统一做首尾工作
+        // 关闭弹层
+        this.loading = false
       }
     },
     // 获取部门信息并且树形化数据
