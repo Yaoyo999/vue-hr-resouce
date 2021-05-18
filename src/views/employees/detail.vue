@@ -17,8 +17,14 @@
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="个人详情" />
+          <el-tab-pane label="个人详情">
+            <!-- <user-info /> 常规组件使用-->
+            <!-- 我们使用了动态组件(动态组件可以切换只需要改变is所绑定的组件名即可)**component**，它通过 **`is`**属性来绑定需要显示在该位置的组件，is属性可以直接为**`注册组件`**的组件名称即可 is为强制绑定属性-->
+            <component :is="USERINFO" />
+          </el-tab-pane>
           <el-tab-pane label="岗位信息" />
+          <!-- 动态组件 -->
+          <component :is="JOBINFO"/>
         </el-tabs>
       </el-card>
     </div>
@@ -28,12 +34,19 @@
 <script>
 import { getBaseUserInfo } from '@/api/user'
 import { saveUserDetailInfo } from '@/api/employees'
+import UserInfo from './components/user-info'
+import JobInfo from './components/job-info'
 export default {
   name: 'detail',
-  components: {},
+  components: {
+    UserInfo,
+    JobInfo
+  },
   props: {},
   data () {
     return {
+      USERINFO: UserInfo,
+      JOBINFO: JobInfo,
       userId: this.$route.params.id, // 这样可以后面直接通过 this.userId进行获取数据
       // 收集，显示表单数据
       userInfo: {
