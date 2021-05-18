@@ -22,9 +22,10 @@
             <!-- 我们使用了动态组件(动态组件可以切换只需要改变is所绑定的组件名即可)**component**，它通过 **`is`**属性来绑定需要显示在该位置的组件，is属性可以直接为**`注册组件`**的组件名称即可 is为强制绑定属性-->
             <component :is="USERINFO" />
           </el-tab-pane>
-          <el-tab-pane label="岗位信息" />
+          <el-tab-pane label="岗位信息">
           <!-- 动态组件 -->
           <component :is="JOBINFO"/>
+          </el-tab-pane>
         </el-tabs>
       </el-card>
     </div>

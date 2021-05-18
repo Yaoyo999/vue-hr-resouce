@@ -47,7 +47,39 @@ export function importEmployee(data){
 //  保存员工的基本信息
 export function saveUserDetailInfo (data) {
   return request({
+    url: `/sys/user/${data.id}`,
+    method: 'PUT',
+    data
+  })
+}
+
+// 获取员工个人信息
+export function getPersonDetail(id) {
+  return request({
+    url: `/employees/${id}/personalInfo`
+  })
+}
+
+// 保存员工个人信息
+export function savePersonDetail(data) {
+  return request({
     url: `/employees/${data.id}/personalInfo`,
+    method: 'PUT',
+    data
+  })
+}
+// 获取员工岗位信息
+export function getPersonJob(id){
+  return request({
+    url: `/employees/${id}/jobs`,
+    method: 'GET'
+  })
+}
+
+// 保存员工岗位信息
+export function savePersonJob(data) {
+  return request({
+    url: `/employees/${data.id}/jobs`,
     method: 'PUT',
     data
   })

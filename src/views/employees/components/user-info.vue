@@ -3,6 +3,7 @@
     <!-- 个人信息 -->
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
+      <div class="title">个人信息</div>
       <el-row class="inline-info">
         <el-col :span="12">
           <el-form-item label="工号">
@@ -37,7 +38,7 @@
       <el-row class="inline-info">
         <el-col :span="12">
           <el-form-item label="手机">
-            <el-input v-model="userInfo.mobile" />
+            <el-input v-model="userInfo.mobile" disabled />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -65,7 +66,7 @@
       <!-- 保存个人信息 -->
       <el-row class="inline-info" type="flex" justify="center">
         <el-col :span="12">
-          <el-button type="primary">保存更新</el-button>
+          <el-button type="primary" @click="saveUserInfo" :loading="userInfoBtn">保存更新</el-button>
           <el-button @click="$router.back()">返回</el-button>
 
         </el-col>
@@ -199,7 +200,7 @@
           <el-input v-model="formData.postalAddress" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="联系手机">
-          <el-input v-model="formData.contactTheMobilePhone" placeholder="11位字符" maxlength="11" class="inputW" @change.native="handlePhone(2)" />
+          <el-input v-model="formData.contactTheMobilePhone" placeholder="11位字符" maxlength="11" class="inputW" @change.native="handlePhone(2)"/>
         </el-form-item>
         <el-form-item label="个人邮箱">
           <el-input v-model="formData.personalMailbox" placeholder="请输入" type="mail" class="inputW" />
@@ -271,7 +272,7 @@
         <!-- 保存员工信息 -->
         <el-row class="inline-info" type="flex" justify="center">
           <el-col :span="12">
-            <el-button type="primary">保存更新</el-button>
+            <el-button type="primary" @click="updatePeopleInfo" :loading="updateBtn">保存更新</el-button>
             <el-button @click="$router.back()">返回</el-button>
           </el-col>
         </el-row>
@@ -283,7 +284,8 @@
 </template>
 <script>
 import EmployeeEnum from '@/api/constant/employees'
-
+import { getBaseUserInfo } from '@/api/user' 
+import { saveUserDetailInfo, getPersonDetail, savePersonDetail} from '@/api/employees'
 export default {
   name: 'user-info',
   data() {
@@ -291,6 +293,8 @@ export default {
       userId: this.$route.params.id,
       EmployeeEnum, // 员工枚举数据
       userInfo: {},
+      userInfoBtn: false, // loading状态 
+      updateBtn: false, // loading状态
       formData: {
         userId: '',
         username: '', // 用户名
@@ -355,6 +359,35 @@ export default {
         remarks: '' // 备注
       }
     }
+  },
+  created () {
+    this.getBaseUserInfo()
+    this.getPersonDetail()
+  },
+  methods: {
+    // 获取员工基本信息
+  async  getBaseUserInfo() {
+    // 数据回写
+    this.userInfo = await getBaseUserInfo(this.userId)
+    },
+    // 保存员工基本信息
+   async saveUserInfo() {
+     this.userInfoBtn = true
+     await saveUserDetailInfo(this.userInfo)
+     this.userInfoBtn = false
+     this.$message.success('保存成功')
+    },
+     // 获取员工个人信息
+  async getPersonDetail () {
+    this.formData = await getPersonDetail(this.userId)
+  },
+  // 保存员工个人信息
+  async updatePeopleInfo() {
+    this.updateBtn = true
+    await savePersonDetail({...this.formData, id: this.userId})
+    this.updateBtn = false
+    this.$message.success('保存成功')
+  }
   }
 }
 </script>
