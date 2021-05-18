@@ -43,3 +43,12 @@ export function importEmployee(data){
     data
   })
 }
+
+//  保存员工的基本信息
+export function saveUserDetailInfo (data) {
+  return request({
+    url: `/employees/${data.id}/personalInfo`,
+    method: 'PUT',
+    data
+  })
+}
