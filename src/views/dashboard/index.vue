@@ -9,6 +9,7 @@
         <button>添加</button>
       </template>
     </page-tools> -->
+    <upload-image />
   </div>
 </template>
 
