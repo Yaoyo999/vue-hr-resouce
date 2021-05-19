@@ -124,7 +124,7 @@
     <!-- 添加员工组件 -->
   <add-employee :employeeDialog.sync="employeeDialog"/>
     <!-- 二维码弹层 -->
-  <el-dialog title="二维码" :visible.sync="showQrCode" @opened="openDialog">
+  <el-dialog title="二维码" :visible.sync="showQrCode">
     <el-row type="flex" justify="center">
       <canvas ref="qrDom"></canvas>
     </el-row>

@@ -4,6 +4,13 @@
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
       <div class="title">个人信息</div>
+    <el-row type="flex" justify="end">
+    <el-tooltip effect="dark" content="打印个人信息" placement="top-start">
+      <router-link :to="`/employees/print/${this.userId}/?type=personal`">
+        <i class="el-icon-printer"></i>
+      </router-link>
+    </el-tooltip>
+    </el-row>
       <el-row class="inline-info">
         <el-col :span="12">
           <el-form-item label="工号">
@@ -86,6 +93,12 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="性别">
+          <el-select v-model="formData.sex" placeholder="性别">
+            <el-option value="男" label="男"></el-option>
+            <el-option value="女" label="女"></el-option>
+        </el-select>
+          </el-form-item>
         <!-- 个人头像 -->
         <!-- 员工照片 -->
 

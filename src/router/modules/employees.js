@@ -17,13 +17,21 @@ export default {
       icon: 'people'
     }
   },
-  { // 这里不加/detail:id 点击路由跳转的时候需要加上父亲的路径加了斜杠就不用
+  { // 这里不加/detail:id 点击路由跳转的时候需要加上父亲的路径加了斜杠就不用 detail/:id?加一个问号这样不用id也能行
     path: 'detail/:id', // query传参 动态路由传参 组件中获取使用this.$route.params ?page=xxx 这种传参， 组件中使用this.$route.query获取参数
     component: () => import('@/views/employees/detail.vue'),
     hidden: true, // 不在左侧菜单显示
     meta: {
       title: '员工详情' // 标记当前路由规则的中文名称 后续在做左侧菜单时 使用
     }
+  },
+  {
+    path: 'print/:id',
+    component: () => import('@/views/employees/print'),
+    meta: {
+      title: '打印'
+    },
+    hidden: true
   }
 ]
 }
