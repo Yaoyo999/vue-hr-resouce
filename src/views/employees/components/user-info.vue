@@ -59,7 +59,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-           
+           <upload-image ref="staffAvator" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -91,6 +91,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <upload-image ref="staffPhoto"/>
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -369,22 +370,44 @@ export default {
   async  getBaseUserInfo() {
     // 数据回写
     this.userInfo = await getBaseUserInfo(this.userId)
+    // 展示员工头像父组件给子组件的fileList赋值 还要排除url为' '带空格的情况去掉头尾的空格这样有值就展示没值就不展示
+    if (this.userInfo.staffPhoto && this.userInfo.staffPhoto.trim()) {
+      // 这里我们赋值，同时需要给赋值的地址一个标记 upload: true 表示已经加载成功了
+    this.$refs.staffAvator.fileList = [{ url: this.userInfo.staffPhoto, upload: true }]
+    }
     },
     // 保存员工基本信息
-   async saveUserInfo() {
+   async saveUserInfo(){
      this.userInfoBtn = true
-     await saveUserDetailInfo(this.userInfo)
+     const fileList = this.$refs.staffAvator.fileList
+    //  判断fileList（数组里面）是不是存在upload不为true如果存在就取消上传
+    if (fileList.some(item => item.upload !== true)) {
+      // 提示用户
+      this.$message.warning('还有未上传完的图片，请稍后再试!')
+      return false
+    }
+    // 这里也需要判断用户fileList有没有值，因为可能没有头像数据就会报错 由于接口的问题我们不能传递''需要传递' '带一个空格否则保存不上空白的地址
+     await saveUserDetailInfo({...this.userInfo, staffPhoto: fileList && fileList.length ? fileList[0].url : ' '})
      this.userInfoBtn = false
      this.$message.success('保存成功')
     },
      // 获取员工个人信息
   async getPersonDetail () {
     this.formData = await getPersonDetail(this.userId)
+    if(this.formData.staffPhoto && this.formData.staffPhoto.trim()) {
+      this.$refs.staffPhoto.fileList = [{ url: this.formData.staffPhoto, upload: true }]
+    }
   },
   // 保存员工个人信息
   async updatePeopleInfo() {
     this.updateBtn = true
-    await savePersonDetail({...this.formData, id: this.userId})
+    const fileList = this.$refs.staffPhoto.fileList
+    if (fileList.some(item => !item.upload)) {
+      this.$message.warning('还有为加载完的图片，请稍后再试')
+      return
+    }
+    // 注意这里我们也可以不保存图片直接存储其他信息那么fileList[0].url就会报错所以我们需要判断fileList是否有值（Boolean([])为true）
+    await savePersonDetail({...this.formData, id: this.userId, staffPhoto: fileList && fileList.length ? fileList[0].url : ' '})
     this.updateBtn = false
     this.$message.success('保存成功')
   }

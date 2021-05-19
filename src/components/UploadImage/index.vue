@@ -36,7 +36,7 @@ export default {
   props: {},
   data () {
     return {
-      fileList: [{url: 'https://dss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=233301930,3031623456&fm=11&gp=0.jpg'}], // 上传的文件列表数组中的url就是选择显示的图片
+      fileList: [], // 上传的文件列表数组中的url就是选择显示的图片
       imgSrc: '', // 预览图片的src值
       dialogShow: false, // 弹出层的显示和隐藏
       currentFileUid: null, // 要上传文件的uid
