@@ -1,6 +1,6 @@
 // 公司和角色相关的接口
 import request from '@/utils/request'
-// 获取角色信息
+// 获取角色列表
 export function getRole (params) {
   return request({
     url: '/sys/role',
@@ -17,7 +17,7 @@ export function addRole(data) {
   })
 }
 
-// 获取角色信息
+// 获取角色详情
 export function getDetialRole (id) {
   return request({
     url: `/sys/role/${id}`,

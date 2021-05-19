@@ -102,7 +102,7 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="assginRole(row.id)">角色</el-button>
             <el-button type="text" size="small" @click="deleteEmployee(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -129,6 +129,8 @@
       <canvas ref="qrDom"></canvas>
     </el-row>
   </el-dialog>
+  <!-- 分配角色的弹层 -->
+  <assgin-role :ShowRoleDialog.sync="showRole" :userId="userId" ref="assginRole"/>
   </div>
 </template>
 
@@ -137,13 +139,15 @@ import { getEmployee, deleteEmployee } from '@/api/employees'
 // 导入枚举数据(注意这里是引入的数据不能直接使用，模板上能直接使用的数据有data,prop,computed里的数据)
 import EmployeeEnum from '@/api/constant/employees'
 import AddEmployee from './components/add-employee'
+import AssginRole from './components/assgin-role'
 // 注意这里是引入文件中的函数formatDate组件模板中是使用的全局注册过滤器
 import { formatDate } from '@/filters/index'
 import QrCode from 'qrcode'
 export default {
   name: 'employeeIndex',
   components: {
-    AddEmployee
+    AddEmployee,
+    AssginRole
   },
   props: {},
   data () {
@@ -157,7 +161,9 @@ export default {
       EmployeeEnum, // 枚举的数据es6写法
       employeeDialog: false, // 添加员工的弹层
       imgSrc: require('@/assets/common/head.jpg'), // 默认的头像
-      showQrCode: false // 二维码的显示
+      showQrCode: false, // 二维码的显示
+      showRole: false, // 控制分配角色的状态
+      userId: null // user的id
     }
   },
   computed: {},
@@ -280,10 +286,17 @@ export default {
       }
   
      
-    }
+    },
     // openDialog () {
     //   QrCode.toCanvas(this.$refs.qrDom, 'http://www.baidu.com')
     // }
+   async assginRole (id) {
+      this.userId = id
+      // 直接调用时异步的先显示弹窗再显示数据会出现数据闪的一下所以我们把它变成同步的
+     await this.$refs.assginRole.getBaseUserInfo(id)
+      // 展示弹层
+      this.showRole = true
+  }
   }
 }
 </script>
