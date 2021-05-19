@@ -34,6 +34,11 @@
           sortable=""
           >
         </el-table-column>
+        <el-table-column width="120px" label="头像" align="center">
+          <template slot-scope="{ row }">
+            <img :src="row.staffPhoto" style="border-radius:50%;width:100px;height:100px;padding:10px" v-imgerror="imgSrc"/>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="workNumber"
@@ -138,7 +143,8 @@ export default {
       },
       total: 0,  // 总条数
       EmployeeEnum, // 枚举的数据es6写法
-      employeeDialog: false // 添加员工的弹层
+      employeeDialog: false, // 添加员工的弹层
+      imgSrc: require('@/assets/common/head.jpg')
     }
   },
   computed: {},
