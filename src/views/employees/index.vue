@@ -36,7 +36,12 @@
         </el-table-column>
         <el-table-column width="120px" label="头像" align="center">
           <template slot-scope="{ row }">
-            <img :src="row.staffPhoto" style="border-radius:50%;width:100px;height:100px;padding:10px" v-imgerror="imgSrc"/>
+            <img 
+            :src="row.staffPhoto" 
+            style="border-radius:50%;width:100px;height:100px;padding:10px" 
+            v-imgerror="imgSrc"
+            @click="showCode(row.staffPhoto)"
+            />
           </template>
         </el-table-column>
         <el-table-column
@@ -118,6 +123,12 @@
     </div>
     <!-- 添加员工组件 -->
   <add-employee :employeeDialog.sync="employeeDialog"/>
+    <!-- 二维码弹层 -->
+  <el-dialog title="二维码" :visible.sync="showQrCode" @opened="openDialog">
+    <el-row type="flex" justify="center">
+      <canvas ref="qrDom"></canvas>
+    </el-row>
+  </el-dialog>
   </div>
 </template>
 
@@ -128,6 +139,7 @@ import EmployeeEnum from '@/api/constant/employees'
 import AddEmployee from './components/add-employee'
 // 注意这里是引入文件中的函数formatDate组件模板中是使用的全局注册过滤器
 import { formatDate } from '@/filters/index'
+import QrCode from 'qrcode'
 export default {
   name: 'employeeIndex',
   components: {
@@ -144,7 +156,8 @@ export default {
       total: 0,  // 总条数
       EmployeeEnum, // 枚举的数据es6写法
       employeeDialog: false, // 添加员工的弹层
-      imgSrc: require('@/assets/common/head.jpg')
+      imgSrc: require('@/assets/common/head.jpg'), // 默认的头像
+      showQrCode: false // 二维码的显示
     }
   },
   computed: {},
@@ -247,7 +260,30 @@ export default {
       })
        // return rows.map(item => Object.keys(headers).map(key => item[headers[key]]))
       // 需要处理时间格式问题
+    },
+    // 展示二维码
+    showCode (url) {
+      // 如果有url才显示弹窗
+      if (url) {
+      // dom为一个canvas的dom对象(显示的容器)， info为转化二维码的信息（这里为图片的地址字符串都可以转为二维码（'123'）都可以
+      // 数据更新了 但是我的弹层会立刻出现吗 ？页面的渲染是异步的！！！！1.要么利用nextTick 2.要么利用dialog的回调函数opend事件（Dialog 打开动画结束时的回调）dom就已经存在了
+      this.showQrCode = true
+      this.$nextTick(()=> {
+        // 此时可以确认已经有ref对象了
+        QrCode.toCanvas(this.$refs.qrDom, url)
+        // 如果转化的二维码后面信息 是一个地址的话 就会跳转到该地址 如果不是地址就会显示内容
+      })
+      //  QrCode.toCanvas(this.$refs.qrDom, '123') // 仅仅这样是不行的 数据变化后dom还没有生成光这样是不行的页面还没加载完毕
+      } else {
+        // 没有地址提示
+        this.$message.warning('该用户还没有上传头像')
+      }
+  
+     
     }
+    // openDialog () {
+    //   QrCode.toCanvas(this.$refs.qrDom, 'http://www.baidu.com')
+    // }
   }
 }
 </script>
