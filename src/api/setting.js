@@ -48,3 +48,12 @@ export function getCompanyInfo(id){
     method: 'GET'
   })
 }
+
+// 给角色分配权限
+export function assginRolePermission(data) {
+  return request({
+    method: 'PUT',
+    url: `/sys/role/assignPrem`,
+    data
+  })
+}

@@ -38,7 +38,7 @@
                     >
                     <!-- 结构出每个数据的rows对象 -->
                     <template slot-scope="{ row }"> 
-                      <el-button size="small" type="success">分配权限</el-button>
+                      <el-button size="small" type="success" @click="assginPermission(row.id)">分配权限</el-button>
                       <el-button size="small" type="primary" @click="editRole(row.id)">编辑</el-button>
                       <el-button size="small" type="danger" @click="delteRole(row)">删除</el-button>
                     </template>
@@ -100,11 +100,33 @@
       </el-col>
     </el-row>
 </el-dialog>
+<!-- 分配权限的弹窗 -->
+<el-dialog :visible="showAssginDiag" title="分配权限" @close="isCancelPerm">
+  <el-tree
+  ref="permTree"
+  :props="defaultProps" 
+  :data="permList"
+  :show-checkbox="true"
+  :default-expand-all="true"
+  :check-strictly="true"
+  node-key="id"
+  :default-checked-keys="permIds"
+  >
+  </el-tree>
+  <el-row type="flex" justify="center" slot="footer">
+    <el-col :span="6">
+      <el-button size="small" @click="isCancelPerm">取消</el-button>
+      <el-button size="small" type="primary" @click="isSurePerm">确定</el-button>
+    </el-col>
+  </el-row>
+</el-dialog>
   </div>
 </template>
 
 <script>
-import { getRole, addRole, getDetialRole, updateRole, delteRole , getCompanyInfo} from '@/api/setting'
+import { getRole, addRole, getDetialRole, updateRole, delteRole , getCompanyInfo, assginRolePermission } from '@/api/setting'
+import { getPermissionList } from '@/api/permission'
+import { transListToTree } from '@/utils/index'
 import { mapGetters } from 'vuex'
 export default {
   name: 'settingIndex',
@@ -137,7 +159,15 @@ export default {
         description: [
           { required: true, message: '请填写角色描述', trigger: 'blur' }
         ]
-      }
+      },
+      showAssginDiag: false, // 权限分配的弹窗
+      permList: [], // 权限点的列表
+      permIds: [], // 权限点数据
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      roleId: '' // 角色id
     }
   },
   computed: {
@@ -236,6 +266,32 @@ isCancel () {
   }).catch(error => {
     console.log(error)
   })
+},
+
+async assginPermission (id) {
+  // 弹层打开是获取所有的权限点(保证获取到最新的数据)
+ this.permList = transListToTree(await getPermissionList(), '0')
+ const { permIds } = await getDetialRole(id)
+  // 存储id后续提交试用
+  this.roleId = id
+ // 通过el-tree的属性实现数据回写
+ this.permIds = permIds
+ this.showAssginDiag = true
+},
+  // 取消分配权限
+  isCancelPerm() {
+  this.showAssginDiag = false
+  // 清空数据
+  this.permIds = []
+  },
+  // 确定分配权限
+  async isSurePerm() {
+  //注意el-tree是单向数据流的 调用el-tree组件的方法获取选择的节点数据
+  //  console.log(this.$refs.permTree.getCheckedKeys())
+  this.permIds = this.$refs.permTree.getCheckedKeys()
+  await assginRolePermission({id: this.roleId, permIds: this.permIds})
+  this.showAssginDiag = false
+  this.$message.success('分配角色成功')
 }
 }
 }
