@@ -29,7 +29,9 @@ router.beforeEach(async (to, from, next) => {
       // routes就是筛选得到的动态路由
         // 动态路由 添加到 路由表中 默认的路由表 只有静态路由 没有动态路由
         // addRoutes  必须 用 next(地址) 不能用next()
-        router.addRoutes(routes)
+        // router.addRoutes(routes)
+        // 我们发现在页面刷新的时候，本来应该拥有权限的页面出现了404，这是因为404的匹配权限放在了静态路由，而动态路由在没有addRoutes之前，找不到对应的地址，就会显示404，所以我们需要将404放置到动态路由的最后
+        router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }]) // 添加到路由表
         // console.log(routes)
         next(to.path) // 相当于跳到对应的地址  相当于多做一次跳转 为什么要多做一次跳转
         // 进门了，但是进门之后我要去的地方的路还没有铺好，直接走，掉坑里，多做一次跳转，再从门外往里进一次，跳转之前 把路铺好，再次进来的时候，路就铺好了
