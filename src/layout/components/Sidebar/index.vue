@@ -28,11 +28,12 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'routes'
     ]),
-    routes() {
-      return this.$router.options.routes
-    },
+    // routes() {
+    //   return this.$router.options.routes // 这是因为左侧菜单读取的是固定的路由，我们要把它换成实时的最新路由 它不是响应式的我们添加的路由它检测不到，之检测的出初始化的数据（静态路由）
+    // },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route

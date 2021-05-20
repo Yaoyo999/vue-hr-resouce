@@ -3,6 +3,7 @@ import router from '@/router/index'
 import store from '@/store/index'
 import NProgress from 'nprogress' // 引入一份进度条插件
 import 'nprogress/nprogress.css' // 引入进度条样式
+import asyncRoutes from '@/router/index'
 // 相当于在组件中调用this.$router
 const writeList = ['/login', '/404']
 // 全局前置守卫
@@ -16,10 +17,27 @@ router.beforeEach(async (to, from, next) => {
     } else {
       // 有token并且还没有userId说明还没获取用户信息
       if(!store.state.user.userInfo.userId) {
-        await store.dispatch('user/getUserInfo')
+        // 异步函数的返回值我们可以直接定义变量接收
+      const { roles:{ menus } } = await store.dispatch('user/getUserInfo')
+       // 我们在这处理动态路由 在这儿写逻辑报错我们将下面的逻辑写在store的permission中
+      //  const routes = []
+      //  menus.forEach(key => {
+      //   routes.push(...asyncRoutes.filter(item => item.name === key))
+      //  })
+      //  console.log(routes)
+     const routes =  await store.dispatch('permission/dispatchRoutes', menus)
+      // routes就是筛选得到的动态路由
+        // 动态路由 添加到 路由表中 默认的路由表 只有静态路由 没有动态路由
+        // addRoutes  必须 用 next(地址) 不能用next()
+        router.addRoutes(routes)
+        // console.log(routes)
+        next(to.path) // 相当于跳到对应的地址  相当于多做一次跳转 为什么要多做一次跳转
+        // 进门了，但是进门之后我要去的地方的路还没有铺好，直接走，掉坑里，多做一次跳转，再从门外往里进一次，跳转之前 把路铺好，再次进来的时候，路就铺好了
+  } else {
+        // 跳转的是其他页面放行
+        next()
   }
-      // 跳转的是其他页面放行
-      next()
+  
     }
   } else {
     // 没有token判断是不是跳转的login和404页面，这两个页面不需要token

@@ -271,6 +271,7 @@ isCancel () {
 async assginPermission (id) {
   // 弹层打开是获取所有的权限点(保证获取到最新的数据)
  this.permList = transListToTree(await getPermissionList(), '0')
+ console.log(this.permList)
  const { permIds } = await getDetialRole(id)
   // 存储id后续提交试用
   this.roleId = id
