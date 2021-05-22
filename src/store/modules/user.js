@@ -1,6 +1,7 @@
 import { login, getUserInfo, getBaseUserInfo } from '@/api/user'
 import { getToken, setToken, removeToken, setTokenTime } from '@/utils/auth'
 import router from '@/router/index'
+import { resetRouter } from '@/router/index'
 export default {
   namespaced: true,
   state: {
@@ -59,7 +60,7 @@ export default {
   context.commit('removeUserToken')
   // 删除用户信息
   context.commit('removeUserInfo')
-    // 当我们登出操作之后，虽然看不到菜单，但是用户实际上可以访问页面，直接在地址栏输入地址就能访问
+    // 当我们换账号之后，虽然看不到菜单，但是用户实际上可以访问页面，直接在地址栏输入地址就能访问
     // 这是因为我们前面在**addRoutes**的时候，一直都是在**加**，登出的时候，我们并没有删，也没有重置，也就是说，我们之前加的路由在登出之后一直在，这怎么处理？
     // 重置路由
     resetRouter()
@@ -68,7 +69,7 @@ export default {
     // vuex中 user子模块  permission子模块
     // 子模块调用子模块的action  默认情况下 是能够调用的没有加命令空间的子模块的方法是挂在全局的都可以调用的，但是我们加了命名空间
     // 父模块 调用 子模块的action
-    context.commit('permission/setRoutes', [], { root: true })
+    // context.commit('permission/setRoutes', [], { root: true })
     // 子模块调用子模块的action 可以 将 commit的第三个参数 设置成  { root: true } 就表示当前的context不是子模块了 而是父模块
   }
  }

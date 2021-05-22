@@ -49,6 +49,7 @@ export default {
    async getRole () {
     const { rows } = await getRole({page: 1,pagesize:20}) // 这里没有一次性获取所有角色列表的接口我们设置为20条，因为角色一般不会太多，这样就获取了全部的角色列表
     this.list = rows
+    console.log(this.list)
     },
     // 取消按钮
     isCancel () {

@@ -30,6 +30,10 @@ Object.keys(filters).forEach(filterName => {
   // 遍历注册所有的过滤器
   Vue.filter(filterName, filters[filterName])
 })
+// 引入混合
+import checkPermPoint from '@/mixins/checkPermPoint'
+// 注册混合
+Vue.mixin(checkPermPoint)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

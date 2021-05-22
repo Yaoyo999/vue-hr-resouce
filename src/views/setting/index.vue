@@ -182,13 +182,17 @@ export default {
   methods: {
     // 获取角色列表
    async getRole() {
-   const { rows, total } =  await getRole(this.page)
+   const { rows, total } =  await getRole({page: 1, pagesize: 20})
+   console.log(rows)
    this.list = rows
    this.total = total
   },
   // 获取公司信息
   async getCompanyInfo() {
-    this.companyForm = await getCompanyInfo(this.companyId)
+    // 注意这里获取到的是数组
+    const companyInfo = await getCompanyInfo(this.companyId)
+    // console.log(companyInfo)
+    this.companyForm = companyInfo[0]
   },
   changePage(page) {
     this.page.page = page

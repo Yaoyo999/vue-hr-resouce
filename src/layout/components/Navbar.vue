@@ -69,7 +69,8 @@ export default {
           type: 'success',
           message: '退出成功'
         });
-      }).catch(() => {
+      }).catch((error) => {
+        console.log(error)
         this.$message({
           type: 'info',
           message: '已取消退出'

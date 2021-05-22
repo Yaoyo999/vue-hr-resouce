@@ -1,6 +1,10 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
+    <div>
+      <span>{{ nickname }}</span>
+      <el-button @click="updateName">修改name</el-button>
+    </div>
     <!-- <page-tools>
        前面的插槽
       <span slot="beforeSolt">这是前面插槽的位置</span>
@@ -9,14 +13,28 @@
         <button>添加</button>
       </template>
     </page-tools> -->
+    <!-- 混入 -->
     <upload-image />
   </div>
 </template>
 
 <script>
+var obj = {
+ data () {
+   return {
+      nickname: '小花',
+   }
+ },
+  methods: {
+    updateName () {
+      this.nickname = '土豆'
+    }
+  }
+}
 import { mapGetters } from 'vuex'
 // import PageTools from '@/components/pageTools'
 export default {
+  mixins: [ obj ],
   name: 'Dashboard',
   computed: {
     ...mapGetters([

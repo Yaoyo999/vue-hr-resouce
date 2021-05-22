@@ -9,7 +9,7 @@
         <template v-slot:afterSlot>
           <el-button size="small" type="warning" @click="$router.push('/import?type=user')">导入</el-button>
           <el-button size="small" type="danger" @click="exportExcel">导出</el-button>
-          <el-button size="small" type="primary" @click="employeeDialog = true">新增员工</el-button>
+          <el-button size="small" type="primary" @click="employeeDialog = true" :disabled="!checkPermPoint('user-add-point')">新增员工</el-button>
         </template>
       </page-tools>
       <!-- 数据列表 -->
