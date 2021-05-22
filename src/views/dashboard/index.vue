@@ -103,6 +103,7 @@
           <div slot="header" class="header">
             <span>绩效指数</span>
           </div>
+          <rader />
         <!-- 放置雷达图 -->
         </el-card>
         <!-- 帮助连接 -->
@@ -141,11 +142,13 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import workCalendar from './components/work-calendar'
+import rader from './components/radar'
 const  { mapState }  = createNamespacedHelpers('user')
 export default {
   name: 'Dashboard',
   components: {
-    workCalendar
+    workCalendar,
+    rader
   },
   computed: {
     ...mapState(['userInfo'])
