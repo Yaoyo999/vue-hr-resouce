@@ -69,7 +69,8 @@ import { getApprovalList } from '@/api/approvals'
 
 export default {
   name: 'SocialTableIndex',
-  components: { },
+  components: {
+   },
   data() {
     return {
       list: [],

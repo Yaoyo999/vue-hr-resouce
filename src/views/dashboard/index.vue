@@ -91,10 +91,10 @@
             <span>流程申请</span>
           </div>
           <div class="sideNav">
-            <el-button class="sideBtn">加班离职</el-button>
+            <el-button class="sideBtn" @click="showDiag = true">离职</el-button>
             <el-button class="sideBtn">请假调休</el-button>
-            <el-button class="sideBtn">审批列表</el-button>
-            <el-button class="sideBtn">我的信息</el-button>
+            <el-button class="sideBtn" @click="$router.push('/users/approvals')">审批列表</el-button>
+            <el-button class="sideBtn" @click="$router.push('/users/info')">我的信息</el-button>
           </div>
         </el-card>
 
@@ -136,6 +136,27 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-dialog title="离职申请" :visible="showDiag" @close="isCancel">
+      <el-form label-width="120px" :model="dataForm" :rules="formRules" ref="postForm">
+        <el-form-item label="离职时间" prop="exceptTime">
+          <el-date-picker 
+          placeholder="选择日期时间" 
+          v-model="dataForm.exceptTime" 
+          value-format="yyyy-MM-dd HH:mm:ss"
+           type="datetime"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="离职原因" style="width: 70%;" prop="reason">
+          <el-input type="textarea" placeholder="请输入内容" v-model="dataForm.reason"></el-input>
+        </el-form-item>
+      </el-form>
+      <el-row type="flex" justify="center" slot="footer">
+        <el-col :span="6">
+          <el-button size="small" @click="isCancel">取消</el-button>
+          <el-button size="small" type="primary" @click="btnOk">确定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -143,6 +164,7 @@
 import { createNamespacedHelpers } from 'vuex'
 import workCalendar from './components/work-calendar'
 import rader from './components/radar'
+import { startProcess } from '@/api/approvals'
 const  { mapState }  = createNamespacedHelpers('user')
 export default {
   name: 'Dashboard',
@@ -155,8 +177,49 @@ export default {
   },
   data () {
     return {
-      imgSrc: require('@/assets/common/head.jpg')
+      imgSrc: require('@/assets/common/head.jpg'),
+      showDiag: false, // 离职弹窗
+      dataForm: {
+        exceptTime: '',
+        reason: '',
+        processKey: 'process_dimission', // 特定的审批
+        processName: '离职'
+      },
+      formRules: {
+        exceptTime: [
+          { required: true, message: '离职时间不能为空', trigger: 'blur' }
+        ],
+        reason: [
+          { required: true, message: '离职原因不能为空', trigger: 'blur' }
+        ]
+      }
     }
+  },
+  methods: {
+    // 取消
+    isCancel() {
+      // 清除数据
+      this.dataForm = {
+        exceptTime: '',
+        reason: '',
+        processKey: 'process_dimission', // 特定的审批
+        processName: '离职'
+      }
+      this.showDiag = false
+    },
+    btnOk () {
+    //  手动校验表单
+    this.$refs.postForm.validate().then(async () => {
+    return await startProcess({ ...this.dataForm, userId: this.userInfo.userId, username: this.userInfo.username })
+    .then(() => {
+    this.$message.success('提交成功')
+    this.showDiag = false
+    }).catch (error => {
+      this.showDiag = false
+      console.log(error)
+    })
+    }
+    )}
   }
 }
 </script>

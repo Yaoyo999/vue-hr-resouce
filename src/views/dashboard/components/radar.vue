@@ -8,6 +8,7 @@
 // import * as echarts from 'echarts'
 // 完成加载过程
 // var echarts = require('echarts')
+import { LegendComponent } from 'echarts/components';
 var echarts = require('echarts/lib/echarts') // 引入echarts主模块
 require('echarts/lib/chart/radar') // 引入雷达图
 // 引入提示框和标题组件
@@ -26,6 +27,7 @@ export default {
   mounted () {
     // 在这儿获取dom,这儿dom才能获取到()获取dom
     var myChart = echarts.init(this.$refs.myEcharts)
+    echarts.use([LegendComponent]);
     // 准备数据
     var option = {
     legend: {
