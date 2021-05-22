@@ -69,7 +69,7 @@ export default {
     // vuex中 user子模块  permission子模块
     // 子模块调用子模块的action  默认情况下 是能够调用的没有加命令空间的子模块的方法是挂在全局的都可以调用的，但是我们加了命名空间
     // 父模块 调用 子模块的action
-    // context.commit('permission/setRoutes', [], { root: true })
+    context.commit('permission/setRoutes', [], { root: true })
     // 子模块调用子模块的action 可以 将 commit的第三个参数 设置成  { root: true } 就表示当前的context不是子模块了 而是父模块
   }
  }

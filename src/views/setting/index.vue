@@ -183,7 +183,7 @@ export default {
     // 获取角色列表
    async getRole() {
    const { rows, total } =  await getRole({page: 1, pagesize: 20})
-   console.log(rows)
+  //  console.log(rows)
    this.list = rows
    this.total = total
   },
