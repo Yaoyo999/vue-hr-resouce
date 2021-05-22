@@ -22,11 +22,13 @@
       <div>
         <div class="fl headL">
           <div class="headImg">
-            <img src="@/assets/common/head.jpg">
+            <!-- 这里我们需要用自己封的指令 -->
+            <img :src="userInfo.staffPhoto" v-imgerror="imgSrc">
           </div>
           <div class="headInfoTip">
-            <p class="firstChild">早安，管理员，祝你开心每一天！</p>
-            <p class="lastChild">早安，管理员，祝你开心每一天！</p>
+            <p class="firstChild">早安，{{this.$store.state.user.userInfo.username}}，祝你开心每一天！</p>
+            <p class="lastChild">{{userInfo.username}} | {{ userInfo.companyName || '未知'}} | {{ userInfo.departmentName 
+              || '未知' }}</p>
           </div>
         </div>
         <div class="fr" />
@@ -40,6 +42,7 @@
         <el-card class="box-card">
           <div slot="header" class="header">
             <span>工作日历</span>
+            <workCalendar />
           </div>
         <!-- 放置日历组件 -->
         </el-card>
@@ -136,20 +139,26 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+import { createNamespacedHelpers } from 'vuex'
+import workCalendar from './components/work-calendar'
+const  { mapState }  = createNamespacedHelpers('user')
 export default {
   name: 'Dashboard',
+  components: {
+    workCalendar
+  },
   computed: {
-    ...mapGetters([
-      'name'
-    ])
+    ...mapState(['userInfo'])
+  },
+  data () {
+    return {
+      imgSrc: require('@/assets/common/head.jpg')
+    }
   }
 }
 </script>
 
 
-<script>
 // var obj = {
 //  data () {
 //    return {
