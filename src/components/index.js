@@ -4,6 +4,7 @@ import UploadExcel from './uploadExcel'
 import UploadImage from './UploadImage'
 import Print from 'vue-print-nb'
 import screeFull from './screeFull'
+import ThemePicker from './themePicker'
 export default {
    install (Vue) { // Vue.use()方法其实的调用install方法，该方法接收一个参数就是Vue
     // 全局注册组件使用Vue.component 全局注册插件使用Vue.use() 全局注册过滤器使用Vue.filter()
@@ -12,5 +13,6 @@ export default {
     Vue.component('upload-image', UploadImage)
     Vue.use(Print)
     Vue.component('screen-full', screeFull)
+    Vue.component('theme-picker', ThemePicker)
   }
 }

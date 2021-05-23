@@ -7,6 +7,8 @@
   </div>
 
     <div class="right-menu">
+      <theme-picker class="right-menu-item"/>
+      <!-- 全屏组件 -->
       <screen-full class="right-menu-item"/>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -189,6 +191,9 @@ export default {
           color: #fff
         }
       }
+    }
+    .right-menu-item {
+       vertical-align: middle;
     }
   }
 }
