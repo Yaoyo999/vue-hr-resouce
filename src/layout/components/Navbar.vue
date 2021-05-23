@@ -5,7 +5,6 @@
       江苏传智播客教育科技股份有限公司
       <span class="breadBtn">体验版</span>
   </div>
-
     <div class="right-menu">
       <!-- 语言选择组件 -->
       <lang  class="right-menu-item"/>

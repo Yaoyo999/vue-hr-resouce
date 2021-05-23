@@ -4,7 +4,10 @@
     <sidebar class="sidebar-container" />
     <div class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
+        <!-- 顶部导航栏 -->
         <navbar />
+        <!-- tags-views -->
+        <tags-view />
       </div>
       <app-main />
     </div>
