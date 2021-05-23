@@ -7,6 +7,9 @@
   </div>
 
     <div class="right-menu">
+      <!-- 语言选择组件 -->
+      <lang  class="right-menu-item"/>
+      <!-- 主题组件 -->
       <theme-picker class="right-menu-item"/>
       <!-- 全屏组件 -->
       <screen-full class="right-menu-item"/>

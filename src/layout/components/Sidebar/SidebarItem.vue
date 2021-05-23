@@ -3,7 +3,11 @@
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
+          <!-- 
+            这里注意我们自定义语言包中的key是英文的，整好我们设计的name和key是相等的所以我们通过name来展示左侧导航栏
+            由于我们全局注册了i18n,每个组件都会拥有一个$t的方法$t(key)
+           -->
+          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="$t('route.'+ onlyOneChild.name)" />
         </el-menu-item>
       </app-link>
     </template>
